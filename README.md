@@ -23,7 +23,7 @@ On command prompt:
 $ ssh root@SERVER_IP_ADDRESS
 ```
 
-Then it'll ask for password
+Then it'll ask for password.
 
 # Setting up root account
 
@@ -42,7 +42,7 @@ Once you're done you'll need to copy the public key onto your server (still on l
 ```
 $ ssh-copy-id -i ~/.ssh/SSH_KEY_NAME root@SERVER_IP_ADDRESS
 ```
-It'll ask you for the account password (you can do the same to secure another account through PKA)
+It'll ask you for the account password (you can do the same to secure another account through PKA).
 
 Then you can log on you server easily using your private key, you can add multiple private key to one user so to check who can access a user with a private key just type:
 ```
@@ -56,7 +56,7 @@ Once you can login to root through a private key you can disable root auth throu
 $ vi /etc/ssh/sshd_config
 ```
 
-And change `PermitRootLogin yes` to `PermitRootLogin without-password`, once it's done you'll need to restart the SSH service :
+And change `PermitRootLogin yes` to `PermitRootLogin without-password`, once it's done you'll need to restart the SSH service:
 ```
 $ service ssh restart
 ```
@@ -100,14 +100,14 @@ Install AMP stack through this:
 $ apt-get install apache2 php mariadb-server mariadb-client libapache2-mod-php7.0 php7.0 php7.0-mysql php7.0-curl php7.0-json php7.0-gd php7.0-mcrypt php7.0-mbstring php7.0-xml php7.0-zip
 ```
 
-By default all of these should be launch on system boot, you can check what is launched on boot by checking `/etc/init.d` folder
+By default all of these should be launch on system boot, you can check what is launched on boot by checking `/etc/init.d` folder.
 
 Also to check if a service is running prompt the following:
 ```
 $ service SERVICE_TO_CHECK_(i.e. apache2) status
 ```
 
-All basic web services should be good now
+All basic web services should be good now.
 
 # Apache configuration
 
