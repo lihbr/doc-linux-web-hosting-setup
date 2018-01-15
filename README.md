@@ -5,10 +5,16 @@ This is just a basic reminder page for setting up a linux server for web hosting
 # Table of Contents
 
 1. [Connection](#connection)
-2. [Changing root password](#changing-root-password)
+2. [Setting up root account](#setting-up-root-account)
 3. [Managing users](#managing-users)
     1. [Creating new user](#creating-new-user)
-    2. [Turn user into super user](#turn-user-into-super-user)
+    2. [Managing user's groups](#managing-users-groups)
+4. [Setting up web services](#setting-up-web-services)
+5. [Apache configuration](#apache-configuration)
+    1. [Moving default directory](#moving-default-directory)
+    2. [Creating subdomain site](#creating-subdomain-site)
+6. [MySQL configuration](#mysql-configuration)
+    1. [Define root password](#define-root-password)
 
 # Connection
 
@@ -65,7 +71,7 @@ $ adduser USER_NAME
 ```
 Then it'll ask you for the user password and other info related to the new user (that you can skip).
 
-## Managing groups
+## Managing user's groups
 
 Adding user to group:
 ```
