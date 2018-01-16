@@ -111,20 +111,70 @@ All basic web services should be good now.
 
 # Apache configuration
 
+## Default mods
+Those are the default mods that i use to run Apache, you may need to install them first:
+```
+$ a2enmod deflate
+$ a2enmod headers
+$ a2enmod rewrite
+$ a2enmod ssl
+```
+
 ## Moving default directory
 
-We'll move default directory (`/var/www`) to `/var/web/www` as `/var/web` will be our root folder for every subdomain.
+We'll see how to move the default directory (`/var/www`) to a new one.
 
 First we'll need to edit some apache default configuration file:
 ```
-$ vi /etc/apache2/sites-enabled/000-default.conf
+$ vi /etc/apache2/sites-enabled/default.conf
 ```
 
 Update it to something like this:
 ```apache
 <VirtualHost *:80>
   ServerAdmin webmaster@localhost
-  DocumentRoot /var/web/www
+  DocumentRoot NEW_PATH_TO_WEBSITE
+...
+```
+
+## Creating new Virtual Host (aKa new website)
+I think it's better to create a new `.conf` file in `/etc/apache2/sites-available` for each new website you'll host on you server.
+
+So first create a new file at `/etc/apache2/sites-available`:
+```
+$ touch SITE_NAME.conf
+```
+
+Then edit it with:
+```
+$ vi SITE_NAME.conf
+```
+
+Here's an example basic configuration for a subdomain website:
+```apache
+<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+
+  ServerName sub.domain.tld
+  ServerAlias alt.sub.domain.tld
+
+  DocumentRoot /path/to/website
+
+  <Directory /path/to/website/>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    Require all granted
+
+    # Add only if you have ssl certificate setup with SITE_NAME-ssl.conf
+    RewriteEngine on
+    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
+    
+    # compression with MOD_DEFLATE
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/atom+xml application/rss+xml application/xml application/javascript
+    # for proxys user
+    Header append Vary User-Agent env=!dont-vary
+  </Directory>
+
   ErrorLog ${APACHE_LOG_DIR}/error.log
   CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
@@ -132,34 +182,23 @@ Update it to something like this:
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
 
-Then we'll do the edit the ssl configuration file:
+Once you're done with this new website configuration you need to reload Apache [(see below)](#managing-active-website), ofc new website configuration will work only if your DNS is up to date.
+
+To delete a website configuration use `rm` command (be careful)
+
+## Managing active website
+
+To enable a website:
 ```
-$ vi /etc/apache2/sites-available/ssl-default.conf
+$ a2ensite CONF_NAME_WITHOUT_.CONF
 ```
 
-Then to update access permission you can edit the end of apache2.conf:
+To disable a website:
 ```
-$ vi /etc/apache2/apache2.conf
-```
-A basic implementation could be:
-```apache
-<Directory />
-  Options FollowSymLinks
-  AllowOverride None
-  Require all denied
-</Directory>
-
-<Directory /var/web/*/>
-  Options Indexes FollowSymLinks MultiViews
-  AllowOverride All
-  Require all granted
-</Directory>
+$ a2dissite CONF_NAME_WITHOUT_.CONF
 ```
 
-Just update the `DocumentRoot` property:
-```apache
-DocumentRoot /var/web/www
-```
+## Restarting Apache service (to load new configuration)
 
 To check if your new configuration is correct you can prompt the following:
 ```
@@ -169,6 +208,11 @@ $ apachectl configtest
 If everything is ok, then you'll need to restart Apache:
 ```
 $ service apache2 restart
+```
+
+If something messed up you can check log here:
+```
+$ tail /var/log/apache2/error.log
 ```
 
 ## Creating subdomain site
@@ -197,25 +241,68 @@ Then apply change with:
  > FLUSH PRIVILEGES;
 ```
 
-# Bin
+# Adding SSL certificate
 
+We'll see how to do so with Let's Encrypt.
+
+First you need to have git installed, if it's not the case then:
+```
+$ apt-get install git-all
+```
+
+Once it's do the following:
+```
+$ cd /opt && git clone https://github.com/certbot/certbot.git && ln -s  certbot/certbot-auto /usr/bin
+$ /opt/certbot/certbot-auto --apache
+```
+
+If something goes wrong related to satisfying the CA try this after installation:
+```
+$ /opt/certbot/certbot-auto  --authenticator standalone --installer apache --pre-hook "service apache2 stop" --post-hook "service apache2 start"
+```
+
+Then Certbot should have created your certificate, and you want them to renew automatically, to do so create a cron:
+```
+$ crontab -e
+```
+
+And add to it a line like this (each day at 3:19):
+```
+19 3 * * * /opt/certbot/certbot-auto renew
+```
+
+To view existing certificates:
+```
+$ /opt/certbot/certbot-auto certificates
+```
+
+In order to activite https on your site you need to create a `SITE_NAME-ssl.conf` in the Apache `sites-available` folder for each of your site. Here's an example:
 ```apache
-```
+<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  
+  ServerName sub.domain.tld
+  ServerAlias alt.sub.domain.tld
+  
+  DocumentRoot /path/to/website
+  
+  <Directory /path/to/website/>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    Require all granted
+    RewriteEngine on
+        RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
+    
+    # compression with MOD_DEFLATE
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/atom+xml application/rss+xml application/xml application/javascript
+    # for proxys user
+    Header append Vary User-Agent env=!dont-vary
+  </Directory>
+  
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
-$ a2ensite CONF_NAME_WITHOUT_.CONF
-```
-
-```
-$ a2dissite CONF_NAME_WITHOUT_.CONF
-```
-
-```
-$ a2enmod deflate
-$ a2enmod headers
-$ a2enmod rewrite
-```
-
-```
-$ tail /var/log/apache2/error.log
-```
+Remind to [enable the new website configuration](#managing-active-website) and to [reload Apache configuration](#restarting-apache-service-to-load-new-configuration)
