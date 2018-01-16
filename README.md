@@ -196,3 +196,26 @@ Then apply change with:
 ```sql
  > FLUSH PRIVILEGES;
 ```
+
+# Bin
+
+```apache
+```
+
+```
+$ a2ensite CONF_NAME_WITHOUT_.CONF
+```
+
+```
+$ a2dissite CONF_NAME_WITHOUT_.CONF
+```
+
+```
+$ a2enmod deflate
+$ a2enmod headers
+$ a2enmod rewrite
+```
+
+```
+$ tail /var/log/apache2/error.log
+```
