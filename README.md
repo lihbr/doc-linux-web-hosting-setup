@@ -15,6 +15,7 @@ This is just a basic reminder page for setting up a linux server for web hosting
     2. [Creating subdomain site](#creating-subdomain-site)
 6. [MySQL configuration](#mysql-configuration)
     1. [Define root password](#define-root-password)
+    
 
 # Connection
 
