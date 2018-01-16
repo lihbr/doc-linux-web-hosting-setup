@@ -11,11 +11,15 @@ This is just a basic reminder page for setting up a linux server for web hosting
     2. [Managing user's groups](#managing-users-groups)
 4. [Setting up web services](#setting-up-web-services)
 5. [Apache configuration](#apache-configuration)
-    1. [Moving default directory](#moving-default-directory)
-    2. [Creating subdomain site](#creating-subdomain-site)
+    1. [Default mods](#default-mods)
+    2. [Moving default directory](#moving-default-directory)
+    3. [Creating new Virtual Host (aKa new website)](#creating-new-virtual-host-aka-new-website)
+    4. [Managing active website](#managing-active-website)
+    5. [Restarting Apache service (to load new configuration)](#restarting-apache-service-to-load-new-configuration)
 6. [MySQL configuration](#mysql-configuration)
     1. [Define root password](#define-root-password)
-    
+7. [Adding SSL certificate](#adding-ssl-certificate)
+
 
 # Connection
 
@@ -214,13 +218,6 @@ $ service apache2 restart
 If something messed up you can check log here:
 ```
 $ tail /var/log/apache2/error.log
-```
-
-## Creating subdomain site
-
-First create a directory in `/var/web` using (once you're at the right location ofc):
-```
-$ mkdir DIRECTORY_NAME
 ```
 
 # MySQL configuration
