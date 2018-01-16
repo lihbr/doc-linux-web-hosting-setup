@@ -183,13 +183,11 @@ Here's an example basic configuration for a subdomain website:
   ErrorLog ${APACHE_LOG_DIR}/error.log
   CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
 
 Once you're done with this new website configuration you need to reload Apache [(see below)](#managing-active-website), ofc new website configuration will work only if your DNS is up to date.
 
-To delete a website configuration use `rm` command (be careful)
+To delete a website configuration use `rm` command (be careful).
 
 ## Managing active website
 
@@ -288,9 +286,6 @@ In order to activite https on your site you need to create a `SITE_NAME-ssl.conf
     Options Indexes FollowSymLinks MultiViews
     AllowOverride All
     Require all granted
-    RewriteEngine on
-        RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
-    
     # compression with MOD_DEFLATE
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/atom+xml application/rss+xml application/xml application/javascript
     # for proxys user
@@ -300,7 +295,5 @@ In order to activite https on your site you need to create a `SITE_NAME-ssl.conf
   ErrorLog ${APACHE_LOG_DIR}/error.log
   CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
-Remind to [enable the new website configuration](#managing-active-website) and to [reload Apache configuration](#restarting-apache-service-to-load-new-configuration)
+Remind to [enable the new website configuration](#managing-active-website) and to [reload Apache configuration](#restarting-apache-service-to-load-new-configuration).
