@@ -289,6 +289,23 @@ $cfg['blowfish_secret'] = 'YOUR_GENERATED_KEY'; /* To generate the key just run 
 ...
 ```
 
+Finally you may need to protect access to phpMyAdmin page using Apache authentification, to do so edit your phpMyAdmin Apache `.conf` file with this after the `<Directory>` tag:
+```apache
+<Location />
+  AuthType Basic
+  AuthName "Restricted Files"
+  AuthUserFile /path/to/.htpasswd
+  Require valid-user
+</Location>
+```
+
+Then generate your `.htpasswd` file with:
+```
+$ htpasswd -c /path/to/.htpasswd USER_NAME
+```
+
+You should be done with phpMyAdmin now, don't forget to [reload Apache configuration](#restarting-apache-service-to-load-new-configuration) if you edited it.
+
 # Adding SSL certificate
 
 We'll see how to do so with Let's Encrypt.
