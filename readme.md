@@ -18,6 +18,7 @@ This is just a basic reminder page for setting up a linux server for web hosting
     5. [Restarting Apache service (to load new configuration)](#restarting-apache-service-to-load-new-configuration)
 6. [MySQL configuration](#mysql-configuration)
     1. [Define root password](#define-root-password)
+    2. [Adding phpMyAdmin](#adding-phpmyadmin)
 7. [Adding SSL certificate](#adding-ssl-certificate)
 
 
@@ -237,6 +238,35 @@ Then apply change with:
  > FLUSH PRIVILEGES;
 ```
 
+## Adding phpMyAdmin
+
+To manage our database easily we'll use phpMyAdmin, first clone the git in the directory of your choice (please note that it'll be a website so it's wise to clone it where you store your other website):
+```
+$ git clone https://github.com/phpmyadmin/phpmyadmin .
+```
+
+Then we need to install php composer:
+```
+$ php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');"
+$ php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+```
+
+Then move on to you phpMyAdmin directory and install dependancies running:
+```
+$ composer install
+```
+
+Now we'll manage permissions for phpMyAdmin:
+```
+$ chown -R root:www-data .
+$ chmod -R g+w .
+```
+
+And you'll need to copy `config.sample.inc.php` to `config.inc.php`:
+```
+$ cp config.inc.sample.php config.inc.php
+```
+
 # Adding SSL certificate
 
 We'll see how to do so with Let's Encrypt.
@@ -270,6 +300,11 @@ And add to it a line like this (each day at 3:19):
 To view existing certificates:
 ```
 $ /opt/certbot/certbot-auto certificates
+```
+
+To add new site to the certificate run (to be checked overwise check --expand option):
+```
+$ /opt/certbot/certbot-auto
 ```
 
 In order to activite https on your site you need to create a `SITE_NAME-ssl.conf` in the Apache `sites-available` folder for each of your site. Here's an example:
