@@ -8,7 +8,10 @@ This is just a basic reminder page for setting up a linux server for web hosting
 2. [Setting up root account](#setting-up-root-account)
 3. [Managing users](#managing-users)
     1. [Creating new user](#creating-new-user)
-    2. [Managing user's groups](#managing-users-groups)
+    2. [Deleting user](#deleting-user)
+    3. [Listing all user](#listing-all-user)
+    4. [Managing user's groups](#managing-users-groups)
+    5. [Setting user to only access his home folder](#setting-user-to-only-access-his-home-folder)
 4. [Setting up web services](#setting-up-web-services)
 5. [Apache configuration](#apache-configuration)
     1. [Default mods](#default-mods)
@@ -67,6 +70,8 @@ And change `PermitRootLogin yes` to `PermitRootLogin without-password`, once it'
 $ service ssh restart
 ```
 
+*Note that you can use this way of connection with Filezilla too (search through software options)*
+
 # Managing users
 
 ## Creating new user
@@ -76,6 +81,25 @@ For everyday use you may prefer to work with a *regular* user, in order to creat
 $ adduser USER_NAME
 ```
 Then it'll ask you for the user password and other info related to the new user (that you can skip).
+
+If you want the user to have a specific home directory (for example a *web* user that have your web directory as home):
+```
+$ useradd USER_NAME --home PATH_TO_HOME
+```
+
+## Deleting user
+
+To delete a user just run (with caution):
+```
+$ userdel USER_NAME
+```
+
+## Listing all user
+
+To list all user:
+```
+$ cat /etc/passwd
+```
 
 ## Managing user's groups
 
@@ -97,6 +121,22 @@ $ deluser USER_NAME GROUP_NAME
 In order to list all existing group perform this command:
 ```
 $ cut -d: -f1 /etc/group
+```
+
+## Setting user to only access his home folder
+
+We'll restrict access of a user to his home with this:
+```
+$ chown -R web:www-data PATH_TO_HOME
+$ chmod -R g+w PATH_TO_HOME
+```
+
+Then if you need to copy your key:
+```
+$ cp -R /root/.ssh PATH_TO_HOME
+$ chown -R web:web PATH_TO_HOME/.ssh
+$ chmod -R 775 PATH_TO_HOME/.ssh
+$ chmod 600 PATH_TO_HOME/.ssh/authorized_keys
 ```
 
 # Setting up web services
