@@ -233,9 +233,15 @@ Then setup root password with:
  > UPDATE mysql.user SET Password = PASSWORD('PASSWORD')
 -> WHERE User = 'root';
 ```
+
 Then apply change with:
 ```sql
  > FLUSH PRIVILEGES;
+```
+
+Once you exited the sql console with `exit` run (it'll ask you for mariadb root password):
+```
+mysql_secure_installation
 ```
 
 ## Adding phpMyAdmin
@@ -265,6 +271,22 @@ $ chmod -R g+w .
 And you'll need to copy `config.sample.inc.php` to `config.inc.php`:
 ```
 $ cp config.inc.sample.php config.inc.php
+```
+
+Once this is done update your apache config to add this new site, you should be able to connect throught it now, if you get error on connection try this on the mysql console:
+```sql
+use mysql;
+update user set plugin='' where User='root';
+flush privileges;
+```
+
+Now that you're logged on phpMyAdmin create a new table named `phpmyadmin`, get into it and go to `operations` tab, then click on the phpMyAdmin alert. You should now get an error asking you to fill the `blowfish_secret`, to do so edit the file `config.inc.php` located at the root of phpMyAdmin directory:
+```php
+...
+
+$cfg['blowfish_secret'] = 'YOUR_GENERATED_KEY'; /* To generate the key just run in the console: $ openssl rand -base64 48 */
+
+...
 ```
 
 # Adding SSL certificate
