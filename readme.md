@@ -129,13 +129,14 @@ We'll restrict access of a user to his home with this:
 ```
 $ chown -R web:www-data PATH_TO_HOME
 $ chmod -R g+w PATH_TO_HOME
+$ chown web:web PATH_TO_HOME
 ```
 
 Then if you need to copy your key:
 ```
 $ cp -R /root/.ssh PATH_TO_HOME
 $ chown -R web:web PATH_TO_HOME/.ssh
-$ chmod -R 775 PATH_TO_HOME/.ssh
+$ chmod -R 700 PATH_TO_HOME/.ssh
 $ chmod 600 PATH_TO_HOME/.ssh/authorized_keys
 ```
 
