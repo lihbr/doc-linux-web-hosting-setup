@@ -1,4 +1,4 @@
-# Linux web hosting setup (Debian)
+# Linux web hosting setup (Debian 9)
 
 This is just a basic reminder page for setting up a linux server for web hosting, please note that this is my first itteration of it and this page is just basicaly here to help me reming of some basics and it may exist better way to do things. Anyway, feel free to suggest anything !
 
