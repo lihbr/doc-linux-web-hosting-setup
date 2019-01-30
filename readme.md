@@ -23,6 +23,7 @@ This is just a basic reminder page for setting up a linux server for web hosting
     1. [Define root password](#define-root-password)
     2. [Adding phpMyAdmin](#adding-phpmyadmin)
 7. [Adding SSL certificate](#adding-ssl-certificate)
+8. [Misc](#misc)
 
 
 # Connection
@@ -412,3 +413,10 @@ In order to activite https on your site you need to create a `SITE_NAME-ssl.conf
 </VirtualHost>
 ```
 Remind to [enable the new website configuration](#managing-active-website) and to [reload Apache configuration](#restarting-apache-service-to-load-new-configuration).
+
+# Misc
+
+Use this command in the right folder to register a new pm2 process:
+```
+$ pm2 start npm --name "your-app-alias" -- start
+```
