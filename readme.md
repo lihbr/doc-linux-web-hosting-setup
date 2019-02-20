@@ -357,7 +357,7 @@ First you need to have git installed, if it's not the case then:
 $ apt-get install git-all
 ```
 
-Once it's do the following:
+Once it's done do the following:
 ```
 $ cd /opt && git clone https://github.com/certbot/certbot.git && ln -s  certbot/certbot-auto /usr/bin
 $ /opt/certbot/certbot-auto --apache
